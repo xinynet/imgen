@@ -39,13 +39,13 @@ import PlaygroundApp from './playground/App';
 import wechatCommunityImage from './assets/wechat-community.jpg';
 import skillExampleImage from '../agents/skills/gpt-image-2-style-library/assets/city-life-system-map.png';
 
-const fallbackRepoUrl = 'https://github.com/freestylefly/awesome-gpt-image-2';
+const fallbackRepoUrl = 'https://github.com/xinynet/imgen';
 const gaMeasurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
 
 const copy = {
   en: {
     loading: 'Loading GPT-Image2 cases...',
-    brand: 'GPT-Image2 Gallery',
+    brand: '寻宝客：AI图像生成',
     navCases: 'Cases',
     navSkill: 'Skill',
     navTemplates: 'Templates',
@@ -250,7 +250,7 @@ const copy = {
   },
   zh: {
     loading: '正在加载 GPT-Image2 案例...',
-    brand: 'GPT-Image2 画廊',
+    brand: '寻宝客：AI图像生成',
     navCases: '案例',
     navSkill: '技能',
     navTemplates: '模板',
@@ -2396,7 +2396,7 @@ function SkillSection({ language, repoUrl }) {
   const t = copy[language];
   const [commandCopied, setCommandCopied] = useState(false);
   const installCommand =
-    'npx skills add freestylefly/awesome-gpt-image-2 --skill gpt-image-2-style-library --agent claude-code codex --global --yes --copy';
+    'npx skills add xinynet/imgen --skill gpt-image-2-style-library --agent claude-code codex --global --yes --copy';
   const skillSourceUrl = `${repoUrl}/tree/main/agents/skills/gpt-image-2-style-library`;
   const npmUrl = 'https://www.npmjs.com/package/gpt-image-2-style-library';
 
