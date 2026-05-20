@@ -104,7 +104,7 @@ const copy = {
     favoriteFailed: 'Favorite update failed. Please try again.',
     closePreview: 'Close preview',
     viewDetails: 'View Details',
-    generateTest: 'Generate Test',
+    generateTest: 'Use',
     generateImage: 'Generate Image',
     generating: 'Generating...',
     editablePrompt: 'Editable Prompt',
@@ -309,7 +309,7 @@ const copy = {
     favoriteFailed: '收藏更新失败，请稍后再试。',
     closePreview: '关闭预览',
     viewDetails: '查看详情',
-    generateTest: '生成测试',
+    generateTest: '使用',
     generateImage: '生成图片',
     generating: '生成中...',
     editablePrompt: '可编辑 Prompt',
@@ -2465,7 +2465,7 @@ function SkillSection({ language, repoUrl }) {
   );
 }
 
-function TemplateSection({ language, styleLibrary, onOpenTemplate }) {
+function TemplateSection({ language, styleLibrary, onOpenTemplate, onUseTemplate }) {
   const t = copy[language];
   const repoDocsUrl = `${styleLibrary.repository || fallbackRepoUrl}/blob/main/${styleLibrary.templateDocument}`;
   const templates = styleLibrary.templates || [];
@@ -2520,10 +2520,10 @@ function TemplateSection({ language, styleLibrary, onOpenTemplate }) {
                     <Eye size={17} />
                     {t.viewDetails}
                   </button>
-                  <a href={`${repoDocsUrl}#${item.anchor}`} target="_blank" rel="noreferrer">
-                    {t.openTemplate}
-                    <ArrowUpRight size={17} />
-                  </a>
+                  <button type="button" className="useBtn" onClick={() => onUseTemplate(item)}>
+                    <ImageIcon size={17} />
+                    {t.generateTest}
+                  </button>
                 </div>
               </div>
             </article>
@@ -2836,11 +2836,23 @@ function PreviewDialog({
                 {isGenerating ? <LoaderCircle className="spinIcon" size={17} /> : <ImageIcon size={17} />}
                 {isGenerating ? t.generating : isOutOfCredits ? t.buyCredits : isSignedIn ? t.generateTest : t.signInToGenerate}
               </button>
+            ) : (
+              <button type="button" className="useBtn" onClick={() => {
+                import('./playground/store').then(({ useStore }) => {
+                  useStore.getState().setPrompt(promptText);
+                });
+                onClose();
+              }}>
+                <ImageIcon size={17} />
+                {t.generateTest}
+              </button>
+            )}
+            {!isTemplate ? (
+              <a href={primaryLink} target="_blank" rel="noreferrer">
+                {primaryLabel}
+                <ArrowUpRight size={17} />
+              </a>
             ) : null}
-            <a href={primaryLink} target="_blank" rel="noreferrer">
-              {primaryLabel}
-              <ArrowUpRight size={17} />
-            </a>
             {!isTemplate && item.sourceUrl ? (
               <a href={item.sourceUrl} target="_blank" rel="noreferrer">
                 {t.source}
@@ -3427,6 +3439,13 @@ function App() {
         language={language}
         styleLibrary={styleLibrary}
         onOpenTemplate={(item) => setPreview({ type: 'template', item })}
+        onUseTemplate={(item) => {
+          const prompt = formatTemplatePrompt(item, language, styleLibrary);
+          import('./playground/store').then(({ useStore }) => {
+            useStore.getState().setPrompt(prompt);
+          });
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
       />
 
       <SkillSection language={language} repoUrl={repoUrl} />
