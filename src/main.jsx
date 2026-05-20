@@ -2977,16 +2977,32 @@ function App() {
     document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
   }, [language]);
 
+  const wasOAuthRedirect = useRef(
+    typeof window !== 'undefined' && /[#&]access_token=/.test(window.location.hash)
+  );
+
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) return undefined;
 
     let active = true;
     supabase.auth.getSession().then(({ data }) => {
-      if (active) setSession(data.session || null);
+      if (active) {
+        setSession(data.session || null);
+        if (data.session && wasOAuthRedirect.current) {
+          wasOAuthRedirect.current = false;
+          history.replaceState(null, '', window.location.pathname);
+          setAccountOpen(true);
+        }
+      }
     });
 
-    const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+    const { data } = supabase.auth.onAuthStateChange((event, nextSession) => {
       setSession(nextSession || null);
+      if (event === 'SIGNED_IN' && nextSession && wasOAuthRedirect.current) {
+        wasOAuthRedirect.current = false;
+        history.replaceState(null, '', window.location.pathname);
+        setAccountOpen(true);
+      }
     });
 
     return () => {
