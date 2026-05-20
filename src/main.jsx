@@ -3293,10 +3293,6 @@ function App() {
             <a href="#gallery" onClick={(e) => { e.preventDefault(); scrollToSection('#gallery'); }}>{t.navCases}</a>
             <a href="#templates" onClick={(e) => { e.preventDefault(); scrollToSection('#templates'); }}>{t.navTemplates}</a>
             <a href="#agent-skill" onClick={(e) => { e.preventDefault(); scrollToSection('#agent-skill'); }}>{t.navSkill}</a>
-            <CommunityNavItem language={language} />
-            <a href={repoUrl} target="_blank" rel="noreferrer">
-              GitHub
-            </a>
             <button
               type="button"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
